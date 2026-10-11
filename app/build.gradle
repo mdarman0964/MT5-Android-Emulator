@@ -123,12 +123,12 @@ android {
     buildToolsVersion "35.0.0"
 
     defaultConfig {
-        applicationId "com.winlator.cmod"
+        applicationId "com.mdarman.mt5emulator"
         minSdkVersion 26
         // We’re preserving Winlator’s request to keep targetSdkVersion at 28
         targetSdkVersion 28
 
-        versionCode 20
+        versionCode 21
         versionName "7.1.4x-mt5"
 
         // External native build from Winlator
