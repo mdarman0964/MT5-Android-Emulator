@@ -1,10 +1,6 @@
 name: Import Winlator runtime and build
 
 on:
-  push:
-    branches: [ "main" ]
-    paths:
-      - ".github/workflows/import-runtime.yml"
   workflow_dispatch:
 
 permissions:
