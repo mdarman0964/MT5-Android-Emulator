@@ -2,6 +2,7 @@ package com.winlator.cmod;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -21,6 +22,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
@@ -289,6 +291,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
+    }
+
+
+    private void showMT5DownloadDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.mt5_download_title)
+                .setMessage(R.string.mt5_download_message)
+                .setPositiveButton(R.string.mt5_windows_installer, (dialog, which) -> downloadWindowsMT5Installer())
+                .setNeutralButton(R.string.mt5_official_page, (dialog, which) -> openWebPage("https://www.metaquotes.net/en/download"))
+                .setNegativeButton(R.string.mt5_android_app, (dialog, which) -> openWebPage("https://play.google.com/store/apps/details?id=net.metaquotes.metatrader5"))
+                .show();
+    }
+
+    private void downloadWindowsMT5Installer() {
+        String installerUrl = "https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe";
+        try {
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(installerUrl));
+            request.setTitle("MetaTrader 5 Windows installer");
+            request.setDescription("Downloading the official MT5 installer");
+            request.setMimeType("application/vnd.microsoft.portable-executable");
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "mt5setup.exe");
+            DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+            if (manager == null) throw new IllegalStateException("Download service unavailable");
+            manager.enqueue(request);
+            Toast.makeText(this, R.string.mt5_download_started, Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(this, R.string.mt5_download_failed, Toast.LENGTH_LONG).show();
+            openWebPage("https://www.metaquotes.net/en/download");
+        }
+    }
+
+    private void openWebPage(String url) {
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+        } catch (Exception e) {
+            Toast.makeText(this, "No browser available to open the download page.", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void showAboutDialog() {
