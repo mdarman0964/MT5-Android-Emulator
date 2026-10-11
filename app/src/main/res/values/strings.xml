@@ -637,6 +637,13 @@ E.g. <b>META</b> for <i>META key</i>, \n
     <string name="vkbasalt_sharpness_denoise">Sharpeness Denoise</string>
     <string name="shutdown">Shutdown</string>
 
+    <string name="mt5_quick_launch">MT5 One-Tap Launch</string>
+    <string name="mt5_quick_launch_title">Launch installed MetaTrader 5</string>
+    <string name="mt5_no_containers">Create a Wine container first, then install the Windows MT5 terminal in it.</string>
+    <string name="mt5_not_installed_title">MT5 terminal not found</string>
+    <string name="mt5_not_installed_message">This container does not appear to have the MT5 terminal installed. Download the installer and install it inside this container first.</string>
+    <string name="mt5_shortcut_created">MT5 shortcut created. Open Shortcuts to launch it.</string>
+    <string name="mt5_shortcut_failed">Could not create the MT5 shortcut.</string>
     <string name="mt5_performance">MT5 Performance Guide</string>
     <string name="mt5_performance_title">RAS MT5 Performance Setup</string>
     <string name="mt5_performance_message">Start with a 1280×720 container resolution and the Compatibility Box64 preset. Close other apps, keep the phone cool, and begin with one chart. If it stutters, try 960×544; if text is too small, return to 1280×720. These are starting points, not guaranteed performance settings.\n\nTo configure a container, open Containers, tap the container menu, choose Edit, and check Screen Size and Advanced → Box64 Preset.\n\nMT5 Windows installation is not automatic yet: download the Windows installer first, then run it inside a configured Wine container.</string>
