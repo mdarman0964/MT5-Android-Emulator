@@ -3,6 +3,8 @@ name: Build Android APK
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - ".github/workflows/import-runtime.yml"
   workflow_dispatch:
 
 permissions:
@@ -19,20 +21,23 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: "8.9"
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
-      - name: Install Android SDK packages
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+        with:
+          cmdline-tools: latest
+          packages: "platform-tools,platforms;android-34,build-tools;35.0.0,ndk;29.0.14206865,cmake;3.22.1"
+          accept-android-sdk-licenses: true
       - name: Build debug APK
-        run: gradle assembleDebug
+        run: |
+          if [ -x ./gradlew ]; then
+            ./gradlew --no-daemon assembleDebug
+          else
+            gradle --no-daemon assembleDebug
+          fi
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
           name: MT5-Android-Emulator-debug-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
           retention-days: 14
