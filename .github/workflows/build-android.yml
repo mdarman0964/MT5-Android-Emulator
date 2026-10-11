@@ -38,7 +38,7 @@ jobs:
             gradle --no-daemon assembleDebug
           fi
       - name: Upload debug APK
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: MT5-Android-Emulator-debug-APK
           path: app/build/outputs/apk/debug/*.apk
