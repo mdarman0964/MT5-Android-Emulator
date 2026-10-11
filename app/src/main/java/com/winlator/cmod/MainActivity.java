@@ -263,7 +263,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.main_menu_about:
                 showAboutDialog();
                 break;
-            case R.id.main_menu_mt5_quick_launch:\n                drawerLayout.closeDrawer(GravityCompat.START);\n                showMT5QuickLaunchDialog();\n                break;\n            case R.id.main_menu_mt5_performance:
+            case R.id.main_menu_mt5_quick_launch:
+                drawerLayout.closeDrawer(GravityCompat.START);
+                showMT5QuickLaunchDialog();
+                break;
+            case R.id.main_menu_mt5_performance:
                 drawerLayout.closeDrawer(GravityCompat.START);
                 showMT5PerformanceDialog();
                 break;
