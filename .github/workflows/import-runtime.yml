@@ -63,7 +63,9 @@ jobs:
           ## License and attribution
           This project retains the upstream LICENSE and source notices. It is based on https://github.com/mdarman0964/Winlator-CMOD and its upstream Winlator project. Check each bundled component's license before redistribution.
           EOF
-          git status --short
+          git fetch origin main
+          git checkout origin/main -- .github/workflows/build-android.yml .github/workflows/import-runtime.yml
+          git reset --mixed origin/main
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
@@ -78,7 +80,12 @@ jobs:
         uses: android-actions/setup-android@v3
         with:
           cmdline-tools: latest
-          packages: "platform-tools,platforms;android-34,build-tools;35.0.0,ndk;29.0.14206865,cmake;3.22.1"
+          packages: |
+            platform-tools
+            platforms;android-34
+            build-tools;35.0.0
+            ndk;29.0.14206865
+            cmake;3.22.1
           accept-android-sdk-licenses: true
       - name: Build full runtime APK
         working-directory: project
