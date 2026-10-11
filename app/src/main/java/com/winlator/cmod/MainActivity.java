@@ -262,6 +262,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.main_menu_about:
                 showAboutDialog();
                 break;
+            case R.id.main_menu_mt5_performance:
+                drawerLayout.closeDrawer(GravityCompat.START);
+                showMT5PerformanceDialog();
+                break;
             case R.id.main_menu_download_mt5:
                 drawerLayout.closeDrawer(GravityCompat.START);
                 showMT5DownloadDialog();
@@ -297,6 +301,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.closeDrawer(GravityCompat.START);
     }
 
+
+    private void showMT5PerformanceDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.mt5_performance_title)
+                .setMessage(R.string.mt5_performance_message)
+                .setPositiveButton(R.string.mt5_performance_open_containers, (dialog, which) -> {
+                    show(new ContainersFragment(), false);
+                    NavigationView navigationView = findViewById(R.id.NavigationView);
+                    if (navigationView != null) navigationView.setCheckedItem(R.id.main_menu_containers);
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
 
     private void showMT5DownloadDialog() {
         new AlertDialog.Builder(this)
