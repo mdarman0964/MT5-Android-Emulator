@@ -44,6 +44,7 @@ import com.winlator.cmod.core.Callback;
 import com.winlator.cmod.core.ImageUtils;
 import com.winlator.cmod.core.PreloaderDialog;
 import com.winlator.cmod.container.ContainerManager;
+import com.winlator.cmod.container.Container;
 import com.winlator.cmod.core.WineThemeManager;
 import com.winlator.cmod.xenvironment.ImageFsInstaller;
 
@@ -262,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.main_menu_about:
                 showAboutDialog();
                 break;
-            case R.id.main_menu_mt5_performance:
+            case R.id.main_menu_mt5_quick_launch:\n                drawerLayout.closeDrawer(GravityCompat.START);\n                showMT5QuickLaunchDialog();\n                break;\n            case R.id.main_menu_mt5_performance:
                 drawerLayout.closeDrawer(GravityCompat.START);
                 showMT5PerformanceDialog();
                 break;
@@ -301,6 +302,63 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.closeDrawer(GravityCompat.START);
     }
 
+
+    private void showMT5QuickLaunchDialog() {
+        ContainerManager manager = new ContainerManager(this);
+        List<Container> containers = manager.getContainers();
+        if (containers.isEmpty()) {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.mt5_quick_launch_title)
+                    .setMessage(R.string.mt5_no_containers)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show();
+            return;
+        }
+        String[] names = new String[containers.size()];
+        for (int i = 0; i < containers.size(); i++) names[i] = containers.get(i).getName();
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.mt5_quick_launch_title)
+                .setItems(names, (dialog, which) -> createMT5Shortcut(manager, containers.get(which)))
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
+
+    private void createMT5Shortcut(ContainerManager manager, Container container) {
+        File programFiles = new File(container.getRootDir(), ".wine/drive_c/Program Files/MetaTrader 5");
+        File terminal = new File(programFiles, "terminal64.exe");
+        if (!terminal.isFile()) {
+            terminal = new File(new File(container.getRootDir(), ".wine/drive_c/Program Files (x86)/MetaTrader 5"), "terminal.exe");
+        }
+        if (!terminal.isFile()) {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.mt5_not_installed_title)
+                    .setMessage(R.string.mt5_not_installed_message)
+                    .setPositiveButton(R.string.download_mt5, (d, w) -> showMT5DownloadDialog())
+                    .setNegativeButton(R.string.cancel, null)
+                    .show();
+            return;
+        }
+        File desktop = container.getDesktopDir();
+        if (!desktop.exists() && !desktop.mkdirs()) {
+            Toast.makeText(this, R.string.mt5_shortcut_failed, Toast.LENGTH_LONG).show();
+            return;
+        }
+        File shortcut = new File(desktop, "MetaTrader 5.desktop");
+        String executable = terminal.getName();
+        String programPath = terminal.getParentFile().getAbsolutePath()
+                .substring(new File(container.getRootDir(), ".wine/drive_c").getAbsolutePath().length());
+        String winePath = "C:" + programPath.replace("/", "\\\\") + "\\\\" + executable;
+        String desktopEntry = "[Desktop Entry]\\nType=Application\\nName=MetaTrader 5\\nExec=wine \"" + winePath + "\"\\nIcon=terminal64\\n";
+        try {
+            java.nio.file.Files.write(shortcut.toPath(), desktopEntry.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            Toast.makeText(this, R.string.mt5_shortcut_created, Toast.LENGTH_LONG).show();
+            show(new ShortcutsFragment(), false);
+            NavigationView navigationView = findViewById(R.id.NavigationView);
+            if (navigationView != null) navigationView.setCheckedItem(R.id.main_menu_shortcuts);
+        } catch (Exception e) {
+            Toast.makeText(this, R.string.mt5_shortcut_failed, Toast.LENGTH_LONG).show();
+        }
+    }
 
     private void showMT5PerformanceDialog() {
         new AlertDialog.Builder(this)
