@@ -34,6 +34,7 @@ jobs:
           rm -rf upstream/app/src/main/cpp/adrenotools
           git clone https://github.com/Pipetto-crypto/libadrenotools.git upstream/app/src/main/cpp/adrenotools
           git -C upstream/app/src/main/cpp/adrenotools checkout 8483dfdaa2abf97ee89ad0e5f337e7b508550c6b
+          git -C upstream/app/src/main/cpp/adrenotools submodule update --init --recursive
       - name: Import complete runtime source into this repository
         working-directory: project
         shell: bash
