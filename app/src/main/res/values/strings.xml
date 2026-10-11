@@ -636,7 +636,7 @@ E.g. <b>META</b> for <i>META key</i>, \n
     <string name="vkbasalt_sharpness_level">Sharpness Level</string>
     <string name="vkbasalt_sharpness_denoise">Sharpeness Denoise</string>
     <string name="shutdown">Shutdown</string>
-</resources>
+
     <string name="download_mt5">Download MT5</string>
     <string name="mt5_download_title">Download MetaTrader 5</string>
     <string name="mt5_download_message">Choose the Windows installer for RAS Emulator, the official MetaQuotes download page, or the Android app.</string>
@@ -645,3 +645,5 @@ E.g. <b>META</b> for <i>META key</i>, \n
     <string name="mt5_android_app">MetaTrader 5 for Android</string>
     <string name="mt5_download_started">MT5 installer download started. Check your Downloads folder.</string>
     <string name="mt5_download_failed">Could not start the download. Opening the official download page instead.</string>
+</resources>
+    
