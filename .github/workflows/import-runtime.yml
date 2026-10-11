@@ -1,6 +1,10 @@
 name: Import Winlator runtime and build
 
 on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - ".github/workflows/import-runtime.yml"
   workflow_dispatch:
 
 permissions:
@@ -23,6 +27,13 @@ jobs:
           ref: mt5-optimization
           path: upstream
           fetch-depth: 1
+      - name: Populate required adrenotools native submodule
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf upstream/app/src/main/cpp/adrenotools
+          git clone https://github.com/Pipetto-crypto/libadrenotools.git upstream/app/src/main/cpp/adrenotools
+          git -C upstream/app/src/main/cpp/adrenotools checkout 8483dfdaa2abf97ee89ad0e5f337e7b508550c6b
       - name: Import complete runtime source into this repository
         working-directory: project
         shell: bash
