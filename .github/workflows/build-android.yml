@@ -25,7 +25,12 @@ jobs:
         uses: android-actions/setup-android@v3
         with:
           cmdline-tools: latest
-          packages: "platform-tools,platforms;android-34,build-tools;35.0.0,ndk;29.0.14206865,cmake;3.22.1"
+          packages: |
+            platform-tools
+            platforms;android-34
+            build-tools;35.0.0
+            ndk;29.0.14206865
+            cmake;3.22.1
           accept-android-sdk-licenses: true
       - name: Build debug APK
         run: |
