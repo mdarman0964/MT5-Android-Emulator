@@ -656,5 +656,10 @@ E.g. <b>META</b> for <i>META key</i>, \n
     <string name="mt5_android_app">MetaTrader 5 for Android</string>
     <string name="mt5_download_started">MT5 installer download started. Check your Downloads folder.</string>
     <string name="mt5_download_failed">Could not start the download. Opening the official download page instead.</string>
+    <string name="mt5_choose_container">Choose the Wine container for MT5</string>
+    <string name="mt5_installer_ready_title">MT5 installer is ready</string>
+    <string name="mt5_installer_ready_message">The Windows installer has been copied into the selected container. Start it now, then follow the MetaTrader 5 setup wizard.</string>
+    <string name="mt5_run_installer">Run installer</string>
+    <string name="mt5_install_prepare_failed">Could not prepare the MT5 installer in that container.</string>
 </resources>
     
