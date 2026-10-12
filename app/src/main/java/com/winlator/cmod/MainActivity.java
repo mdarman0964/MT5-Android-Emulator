@@ -388,11 +388,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void downloadWindowsMT5Installer() {
+        File installer = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "mt5setup.exe");
+        if (installer.isFile() && installer.length() > 0) {
+            installMT5IntoContainer(installer);
+            return;
+        }
+
         String installerUrl = "https://download.terminal.free/cdn/web/metaquotes.ltd/mt5/mt5setup.exe";
         try {
             DownloadManager.Request request = new DownloadManager.Request(Uri.parse(installerUrl));
             request.setTitle("MetaTrader 5 Windows installer");
-            request.setDescription("Downloading the official MT5 installer");
+            request.setDescription("After download, open Install / Download MT5 again to install it into a container.");
             request.setMimeType("application/vnd.microsoft.portable-executable");
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "mt5setup.exe");
@@ -404,6 +410,58 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(this, R.string.mt5_download_failed, Toast.LENGTH_LONG).show();
             openWebPage("https://www.metaquotes.net/en/download");
         }
+    }
+
+    private void installMT5IntoContainer(File installer) {
+        ContainerManager manager = new ContainerManager(this);
+        List<Container> containers = manager.getContainers();
+        if (containers.isEmpty()) {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.mt5_download_title)
+                    .setMessage(R.string.mt5_no_containers)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show();
+            return;
+        }
+
+        String[] names = new String[containers.size()];
+        for (int i = 0; i < containers.size(); i++) names[i] = containers.get(i).getName();
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.mt5_choose_container)
+                .setItems(names, (dialog, which) -> {
+                    Container container = containers.get(which);
+                    File downloadsDir = new File(container.getRootDir(), ".wine/drive_c/users/Public/Downloads");
+                    File targetInstaller = new File(downloadsDir, "mt5setup.exe");
+                    File desktopDir = container.getDesktopDir();
+                    File shortcut = new File(desktopDir, "Install MetaTrader 5.desktop");
+                    try {
+                        if (!downloadsDir.isDirectory() && !downloadsDir.mkdirs())
+                            throw new java.io.IOException("Unable to create container Downloads directory");
+                        if (!desktopDir.isDirectory() && !desktopDir.mkdirs())
+                            throw new java.io.IOException("Unable to create container Desktop directory");
+                        java.nio.file.Files.copy(installer.toPath(), targetInstaller.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                        String entry = "[Desktop Entry]\\nType=Application\\nName=Install MetaTrader 5\\nExec=wine \\\"C:\\\\users\\\\Public\\\\Downloads\\\\mt5setup.exe\\\"\\nIcon=terminal64\\n";
+                        java.nio.file.Files.write(shortcut.toPath(), entry.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+
+                        new AlertDialog.Builder(this)
+                                .setTitle(R.string.mt5_installer_ready_title)
+                                .setMessage(R.string.mt5_installer_ready_message)
+                                .setPositiveButton(R.string.mt5_run_installer, (d, w) -> {
+                                    Intent intent = new Intent(MainActivity.this, XServerDisplayActivity.class);
+                                    intent.putExtra("container_id", container.id);
+                                    intent.putExtra("shortcut_path", shortcut.getAbsolutePath());
+                                    intent.putExtra("shortcut_name", "Install MetaTrader 5");
+                                    startActivity(intent);
+                                })
+                                .setNegativeButton(android.R.string.cancel, null)
+                                .show();
+                    } catch (Exception e) {
+                        Log.e("RAS-MT5", "Unable to prepare MT5 installer", e);
+                        Toast.makeText(this, R.string.mt5_install_prepare_failed, Toast.LENGTH_LONG).show();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
     }
 
     private void openWebPage(String url) {
