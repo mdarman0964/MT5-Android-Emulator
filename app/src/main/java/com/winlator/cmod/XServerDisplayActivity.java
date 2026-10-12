@@ -523,7 +523,9 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
         xServer.windowManager.addOnWindowModificationListener(new WindowManager.OnWindowModificationListener() {
             @Override
             public void onUpdateWindowContent(Window window) {
-                if (!winStarted[0] && window.isApplicationWindow()) {
+                // Close the startup overlay for the first rendered Wine window, including modal popups.
+                // Otherwise a popup can remain hidden behind the fullscreen overlay and block desktop controls.
+                if (!winStarted[0]) {
                     xServerView.getRenderer().setCursorVisible(true);
                     preloaderDialog.closeOnUiThread();
                     winStarted[0] = true;
