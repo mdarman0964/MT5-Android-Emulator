@@ -45,6 +45,7 @@ import com.winlator.cmod.core.AppUtils;
 import com.winlator.cmod.core.FileUtils;
 import com.winlator.cmod.core.PreloaderDialog;
 import com.winlator.cmod.xenvironment.ImageFs;
+import com.winlator.cmod.xenvironment.ImageFsInstaller;
 
 import java.io.File;
 import java.io.FileOutputStream;
