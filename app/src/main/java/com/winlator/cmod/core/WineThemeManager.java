@@ -136,21 +136,27 @@ public abstract class WineThemeManager {
             canvas.drawBitmap(image, srcRect, dstRect, paint);
         }
         else {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inTargetDensity = DisplayMetrics.DENSITY_HIGH;
-            Bitmap wallpaperBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.wallpaper, options);
+            // RAS desktop wallpaper: bright Windows-inspired blue flowing shapes.
+            android.graphics.LinearGradient gradient = new android.graphics.LinearGradient(
+                    0, 0, outputWidth, outputHeight,
+                    new int[] {0xffeaf7ff, 0xff79c9ff, 0xff0878d1, 0xff073b78},
+                    null, android.graphics.Shader.TileMode.CLAMP);
+            paint.setShader(gradient);
+            canvas.drawRect(0, 0, outputWidth, outputHeight, paint);
+            paint.setShader(null);
             paint.setStyle(Paint.Style.FILL);
-            paint.setColor(0xff01579b);
-            canvas.drawRect(0, 0, outputWidth, outputHeight * 0.5f, paint);
-            paint.setColor(0xff0277bd);
-            canvas.drawRect(0, outputHeight * 0.5f, outputWidth, outputHeight, paint);
-
-            float targetSize = outputHeight * (320.0f / 480.0f);
-            float centerX = (outputWidth - targetSize) * 0.5f;
-            float centerY = (outputHeight - targetSize) * 0.5f;
-            Rect srcRect = new Rect(0, 0, wallpaperBitmap.getWidth(), wallpaperBitmap.getHeight());
-            RectF dstRect = new RectF(centerX, centerY, centerX + targetSize, centerY + targetSize);
-            canvas.drawBitmap(wallpaperBitmap, srcRect, dstRect, paint);
+            paint.setColor(0x55ffffff);
+            canvas.drawOval(new RectF(outputWidth * 0.08f, outputHeight * 0.14f,
+                    outputWidth * 0.88f, outputHeight * 0.86f), paint);
+            paint.setColor(0x663aaeff);
+            canvas.drawOval(new RectF(outputWidth * 0.18f, outputHeight * 0.20f,
+                    outputWidth * 0.96f, outputHeight * 0.92f), paint);
+            paint.setColor(0x8873d5ff);
+            canvas.drawOval(new RectF(outputWidth * 0.30f, outputHeight * 0.30f,
+                    outputWidth * 0.88f, outputHeight * 0.78f), paint);
+            paint.setColor(0x66ffffff);
+            canvas.drawOval(new RectF(outputWidth * 0.38f, outputHeight * 0.36f,
+                    outputWidth * 0.78f, outputHeight * 0.68f), paint);
         }
 
         ImageFs imageFs = ImageFs.find(context);
