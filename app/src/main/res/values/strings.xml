@@ -662,5 +662,6 @@ E.g. <b>META</b> for <i>META key</i>, \n
     <string name="mt5_installer_ready_message">The Windows installer has been copied into the selected container. Start it now, then follow the MetaTrader 5 setup wizard.</string>
     <string name="mt5_run_installer">Run installer</string>
     <string name="mt5_install_prepare_failed">Could not prepare the MT5 installer in that container.</string>
+    <string name="debug_center">Debug Center</string>
 </resources>
     
