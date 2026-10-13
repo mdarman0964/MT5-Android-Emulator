@@ -275,7 +275,9 @@ public class DebugCenterFragment extends Fragment {
     }
 
     private void shareIssues() {
-        String text = readIssues().toString(2);
+        String text;
+        try { text = readIssues().toString(2); }
+        catch (Exception e) { text = readIssues().toString(); }
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, "MT5 Android Emulator - Issue Notes");
