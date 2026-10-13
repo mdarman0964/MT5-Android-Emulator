@@ -842,8 +842,20 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
 
     @Override
     protected void onDestroy() {
-        stopService(new Intent(this, BackgroundKeepAliveService.class));
+        // Keep the foreground service alive when Android backgrounds/recreates this Activity.
         super.onDestroy();
+    }
+
+    @Override
+    public void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        // Pressing Home/minimize should leave the Windows session running in PiP.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !isInPictureInPictureMode()) {
+            android.app.PictureInPictureParams params = new android.app.PictureInPictureParams.Builder()
+                    .setAspectRatio(new android.util.Rational(16, 9))
+                    .build();
+            enterPictureInPictureMode(params);
+        }
     }
 
     @Override
