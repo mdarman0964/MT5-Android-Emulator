@@ -1157,7 +1157,18 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
 
         // Pass final envVars to the launcher
         guestProgramLauncherComponent.setEnvVars(envVars);
-        guestProgramLauncherComponent.setTerminationCallback((status) -> exit());
+        guestProgramLauncherComponent.setTerminationCallback((status) -> {
+            // Closing the default Winlator file manager (wfm.exe) must not close
+            // the whole container session. The Wine "shell" desktop can remain
+            // alive without a foreground app, so only shortcut-launched apps
+            // should automatically end this display session when they exit.
+            if (shortcut != null) {
+                Log.d("XServerDisplayActivity", "Shortcut process ended; closing session (status=" + status + ")");
+                runOnUiThread(this::exit);
+            } else {
+                Log.d("XServerDisplayActivity", "Default file manager ended; keeping Windows desktop session alive (status=" + status + ")");
+            }
+        });
 
         // Add the launcher to our environment
         environment.addComponent(guestProgramLauncherComponent);
