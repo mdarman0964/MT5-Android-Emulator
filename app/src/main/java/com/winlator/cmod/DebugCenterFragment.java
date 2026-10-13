@@ -245,11 +245,39 @@ public class DebugCenterFragment extends Fragment {
         if (matches.isEmpty()) addText("No matching lock files found in the locations this app can inspect.", 15, false);
         for (File f : matches) {
             addCardText(f.getAbsolutePath() + "\n" + readableSize(f.length()) + " • modified " + DateFormat.getDateTimeInstance().format(new Date(f.lastModified())));
-            addButton(content, "View details", () -> new AlertDialog.Builder(requireContext())
+            LinearLayout row = new LinearLayout(requireContext());
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            addButton(row, "View contents", () -> showFilePreview(f));
+            addButton(row, "Details", () -> new AlertDialog.Builder(requireContext())
                     .setTitle("Lock file details")
                     .setMessage("Path: " + f.getAbsolutePath() + "\nSize: " + f.length() + " bytes\nReadable: " + f.canRead() + "\nWritable: " + f.canWrite())
                     .setPositiveButton("OK", null).show());
+            content.addView(row);
         }
+    }
+
+    private void showFilePreview(File file) {
+        StringBuilder preview = new StringBuilder();
+        try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(file))) {
+            String line;
+            int chars = 0;
+            while ((line = reader.readLine()) != null && chars < 8192) {
+                preview.append(line).append('\n');
+                chars += line.length() + 1;
+            }
+            if (file.length() > 8192) preview.append("\n… preview limited to approximately 8 KB …");
+        } catch (Exception e) {
+            preview.append("Could not read this file as text: ").append(e.getMessage())
+                    .append("\nThe file may be binary or protected by Android.");
+        }
+        TextView text = new TextView(requireContext());
+        text.setText(preview.length() == 0 ? "(Empty file)" : preview.toString());
+        text.setTextIsSelectable(true);
+        text.setPadding(dp(16), dp(12), dp(16), dp(12));
+        ScrollView scroll = new ScrollView(requireContext());
+        scroll.addView(text);
+        new AlertDialog.Builder(requireContext()).setTitle(file.getName())
+                .setView(scroll).setPositiveButton("Close", null).show();
     }
 
     private void collectLocks(File dir, List<File> matches, int depth) {
