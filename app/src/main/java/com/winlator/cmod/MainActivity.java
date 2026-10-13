@@ -440,7 +440,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (!desktopDir.isDirectory() && !desktopDir.mkdirs())
                             throw new java.io.IOException("Unable to create container Desktop directory");
                         java.nio.file.Files.copy(installer.toPath(), targetInstaller.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-                        String entry = "[Desktop Entry]\\nType=Application\\nName=Install MetaTrader 5\\nExec=wine \\\"C:\\\\users\\\\Public\\\\Downloads\\\\mt5setup.exe\\\"\\nIcon=terminal64\\n";
+                        String entry = "[Desktop Entry]\nType=Application\nName=Install MetaTrader 5\nExec=wine \"C:\\users\\Public\\Downloads\\mt5setup.exe\"\nIcon=terminal64\n";
                         java.nio.file.Files.write(shortcut.toPath(), entry.getBytes(java.nio.charset.StandardCharsets.UTF_8));
 
                         new AlertDialog.Builder(this)
